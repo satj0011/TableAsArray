@@ -4,91 +4,125 @@
 #May be used by everyone at Umeå University.
 #Usage exept those listed above requires permission by the author.
 
-#from Array import Array
+from Array import Array
 
-"""
-Datatypen Tabell enligt definitionen på sidan 117 i Lars-Erik Janlert,
-Torbjörn Wiberg Datatyper och algoritmer 2., [rev.] uppl.,Lund,
-Studentlitteratur, 2000, x, 387 s. ISBN 91-44-01364-7
-
-Variabler och funktioner som inleds med ett enkelt underscore "_" är privata
-för klassen och ska inte användas av de som använder denna klass.
-
-Denna klass implementerar tabell med hjälp av en Array
-"""
-class Table:
-
-    def __init__(self,low=(0,),high=(0,)):
-        """
-            #Syfte: Skapar en tom tabell med hjälp av en Array
-            #Returvärde: -
-            #Kommentarer: I boken heter denna funktion Empty. 
-
-        """	        
-        self._table = Array()
+class Table(object):
       
-    #def insert(self, key, obj):
-        #"""
-            #Syfte: utökar eller omdefinierar tabellen så att nyckeln key kopplas 
-                   #till värdet obj
-            #Returvärde: -
-            #Kommentarer: Det krävs att key är en typ som kan jämföras med 
-                    #likhet. Om det är en egen klass måste man överladda 
-                    #funktionen __eq__
-        #"""
-        #if self.isempty():
-            #self._table.insert(self._table.first(), (key, obj))
-        #else:
-            #found = False
-            #pos = self._table.first()
-            #while (not found) and (not self._table.isEnd(pos)):
-                #(newKey, newObj) = self._table.inspect(pos)
-                #if newKey == key:
-                    #found = True
-                    #pos = self._table.remove(pos)
-                    #pos = self._table.insert(self._table.first(), (key, obj)) 
-                #pos = self._table.next(pos)
-            #if not found:
-                #self._table.insert(self._table.first(), (key, obj))
-        
-    #def isempty(self):
-        #"""
-            #Syfte: Testar om tabellen är tom
-            #Returvärde: Returnerar sant om tabellen är tom, annars falsk
-            #Kommentarer: 
-        #"""        
-        #return self._table.isempty()
+      def __init__(self):
+            """
+                Syfte: Skapar en tom tabell med hjälp av en riktad lista med "a" som undre gräns
+                och "b" som övre gräns
+                Returvärde: -
+                Kommentarer: I boken heter denna funktion Empty.
+      
+            """
+            a=(0,)
+            b=(1000,)
+            self._table = Array(lo=a,hi=b)
+            
+            self._firstEmptyPlace = 0
+            self._first=0
+            
+            ##Fundering, kommer self._first alltid vara 0 så den hämtas från __init__?
+            ##  Även om den ändras i klassens andra defs?
+            ##Om JA: bra för pos, dåligt för self._firstEmptyPlace
+            ##Om Nej. dåligt för alla pos, döp om alla pos till 0 i defs och ta bort self._first(värdelös då)          
+            ##Fundering nr 2
+            ## Det här är ju ett "table", men har gjort den så att det bara är en rad.
+            ## ska a=0 eller a=1?
+            ## funkar det att indexera som jag gjort eller ska jag använda kordinater ex (a,1) för första pos
+            ##(a,2) för andra pos osv eller funkar det med bara nr?
+            ##Fundering nr 3
+            ## Vet inte riktigt när man ska använda sig av tupler
+            ## rad 60 exempelvis i insert. ska det vara if key==NewKey: eller  if(key,)==NewKey
+            ## Fundering 4: får error på indentering på defs. vet ej varför
+            
+      
+      def insert(self, key, obj):
+            """
+                #Syfte: utökar eller omdefinierar tabellen så att nyckeln key kopplas
+                       #till värdet obj
+                #Returvärde: -
+                #Kommentarer: Det krävs att key är en typ som kan jämföras med
+                        #likhet. Om det är en egen klass måste man överladda
+                        #funktionen __eq__
+            #"""
+            
+            if self._firstEmptyPlace==0:
+                  self._firstEmptyPlace += 1
+                  self._table.setValue(pos, value=(key,obj))
+            else:
+                  found=False
+                  pos=self._first
+                  while (not found) and (pos!= seld._firstEmptyPlace):
+                        (NewKey,NewObj)=self._table.inspectValue(pos)
+                        if key==NewKey: # kanske (key,)
+                              found=True
+                              self._table.setValue(pos, value=(key,obj))
+                              self._firstEmptyPlace += 1
+                        else:
+                              pos+=1
+                  if not found:
+                        self._table.setValue(self._firstEmptyPlace, value=(key,obj))
+                   
+                        self._firstEmptyPlace += 1
+            
+                  
+      def isempty(self):
+            """
+                #Syfte: Testar om tabellen är tom
+                #Returvärde: Returnerar sant om tabellen är tom, annars falsk
+                #Kommentarer:
+            #"""
+            
+            if self._firstEmptyPlace == 0:
+                  return True
+            else:
+                  return False
+      
+      def lookup(self, key):
+            """
+                #Syfte: Ser efter om tabellen innehåller nyckeln key och returnerar
+                       #i så fall värdet som är kopplat till nyckeln
+                #Returvärde: Returnerar en tuppel (True, obj) där obj är värdet som
+                       #är kopplat till nyckeln om nyckeln finns och annars (False, None)
+                #Kommentarer: Om kön är tom returneras (False, None)
+            """
 
-    #def lookup(self, key):
-        #"""
-            #Syfte: Ser efter om tabellen innehåller nyckeln key och returnerar
-                   #i så fall värdet som är kopplat till nyckeln
-            #Returvärde: Returnerar en tuppel (true, obj) där obj är värdet som 
-                   #är kopplat till nyckeln om nyckeln finns och annars (false, None)
-            #Kommentarer: Om kön är tom returneras (false, None)
-        #"""
-        #pos = self._table.first()
-        #while not self._table.isEnd(pos):
-            #(newKey, newObj) = self._table.inspect(pos)
-            #if newKey == key:
-                #return (True, newObj)
-            #pos = self._table.next(pos)
-        #return (False, None)
-        
-    #def remove(self, key):
-        #"""
-            #Syfte: Tar bort nyckeln key och dess sammankopplade värde.
-            #Returvärde: -
-            #Kommentarer: Om nyckeln inte finns så händer inget med tabellen
-        #"""        
-        #if not self.isempty():
-            #found = False
-            #pos = self._table.first()
-            #while (not found) and (not self._table.isEnd(pos)):
-                #(newKey, newObj) = self._table.inspect(pos)
-                #if newKey == key:
-                    #found = True
-                    #pos = self._table.remove(pos)
-                #else:
-                    #pos = self._table.next(pos)  
+            pos=self._first ##### pos=0?
+            while pos!= self._firstEmptyPlace:
+                  (NewKey,NewObj)=self._table.inspectValue(pos)
+                  if NewKey==key:
+                        return (True, NewObj)
+                  pos+=1
+            return (False,None)
+                  
+            
+            
+      
+      def remove(self, key):
+            """
+                #Syfte: Tar bort nyckeln key och dess sammankopplade värde.
+                #Returvärde: -
+                #Kommentarer: Om nyckeln inte finns så händer inget med tabellen
+            """ 
+            if self._firstEmptyPlace!=0:
+                  found=False
+                  pos=self._first
+                  nextpos=pos+1
+                  while (not found) and (pos!=self._firstEmptyPlace):
+                        (NewKey,NewValue)=self._table.inspectValue(pos)
+                        if NewKey==key:
+                              found=True
+                              
+                              while nextpos!=self._firstEmptyPlace:
+                                    (Key1,Value1)=self._table.inspectValue(pos)
+                                    self._table.setValue(pos, value=(Key1,Value1))
+                                    pos+=1
+                                    nextpos+=1
+                              
+                              self._firstEmptyPlace-=1 # sitter den här på rätt rad
+                        else:
+                              pos+=1
+
 
